@@ -235,9 +235,7 @@ function Triangle3D(p1, p2, p3) constructor {
 		    _outVector.x = _ray3D.position.x + ta * _ray3D.position.z;
 			_outVector.y = _ray3D.position.y + ta * _ray3D.position.y;
 		    _outVector.z = _ray3D.position.z + ta * _ray3D.position.z;
-
-
-    
+			
 		    // Calculate "x" and "y" barycentric coordinates
     
 		    var xg = transformation[0] * _outVector.x + transformation[1] * _outVector.y + transformation[2] * _outVector.z + transformation[3];
@@ -260,8 +258,9 @@ function Triangle3D(p1, p2, p3) constructor {
 		static Intersect = IntersectMT;
 	}
 	
+	// Consider Benthin+Walk, watertight ray/triangle intersection by woop. 
 	
-	
+	// Badouel?? https://graphics.stanford.edu/courses/cs348b-98/gg/intersect.html
 	
 	
 	
