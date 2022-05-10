@@ -112,8 +112,8 @@ function Camera3D(_projection_type = camera_projections.perspective, _znear = 32
 	
 	cached_euler_orientation = new Vec3(undefined, 0, 0);
 	
-	// p_update_inverse = true;
-	// inv_mat = array_create(16);
+	p_update_inverse = true;
+	inv_mat = array_create(16);
 	
 	
 	
@@ -576,7 +576,7 @@ function Camera3D(_projection_type = camera_projections.perspective, _znear = 32
 			p_update_lookat = false;
 			p_update_viewproj = true;
 		}
-		// p_update_inverse = p_update_inverse || p_update_viewproj;
+		p_update_inverse = p_update_inverse || p_update_viewproj;
 		
 		return self;
 	}
