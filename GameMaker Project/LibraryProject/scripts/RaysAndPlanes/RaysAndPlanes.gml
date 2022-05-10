@@ -102,14 +102,16 @@ function Triangle3D(p1, p2, p3) constructor {
 	edgeAC = new Vec3(pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z);
 	
 	normal = new Vec3();
+	//edgeAB.Cross(edgeAC, normal);	
 	edgeAC.Cross(edgeAB, normal);
+
 	normal.Normalize();
 	
 	
 	
 	// Möller–Trumbore intersection algorithm from https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
 	// Adapated to use GML and vec3 things. Epsilon may not be necessary because of GMs built in epsilon, but this makes it follow rules more consistently (especially between C++ and GML)
-	static IntersectMT = function(_ray3D, _outVector) {
+	static IntersectMT = function(_ray3D, _outVector4, _limit=infinity) {
 		
 		var EPSILON = 0.0000001;
 	    
@@ -135,11 +137,17 @@ function Triangle3D(p1, p2, p3) constructor {
 	        return false;
 	    // At this stage we can compute t to find out where the intersection point is on the line.
 	    var t = f * edgeAC.Dot(q);
+		
+		if(t >= _limit) {
+			return false;
+		}
+		
 	    if (t > EPSILON) // ray intersection
 	    {
-			_outVector.x = _ray3D.position.x + _ray3D.direction.x * t;
-			_outVector.y = _ray3D.position.y + _ray3D.direction.y * t;
-			_outVector.z = _ray3D.position.z + _ray3D.direction.z * t;
+			_outVector4.x = _ray3D.position.x + _ray3D.direction.x * t;
+			_outVector4.y = _ray3D.position.y + _ray3D.direction.y * t;
+			_outVector4.z = _ray3D.position.z + _ray3D.direction.z * t;
+			_outVector4.w = t;
 
 	        return true;
 	    }
@@ -228,7 +236,7 @@ function Triangle3D(p1, p2, p3) constructor {
 	    }
 		
 		
-		static IntersectBW = function(_ray3D, _outVector) {
+		static IntersectBW = function(_ray3D, _outVector4, _limit=infinity) {
 			// Get barycentric z components of ray origin and direction for calculation of t value
     
 		    var transS = transformation[8] * _ray3D.position.x + transformation[9] * _ray3D.position.y + transformation[10] * _ray3D.position.z + transformation[11];
@@ -243,23 +251,27 @@ function Triangle3D(p1, p2, p3) constructor {
 		   // if ( ta <= tNear || ta >= tFar )		    
 			if ( ta <= 0.0000001 || ta >= 10000.0 )
 		        return false;
-    
+			
+			if(ta >= _limit) {
+				return false;
+			}
     
 		    // Get global coordinates of ray's intersection with triangle's plane.
 			// static wr = array_create(3);
-		    _outVector.x = _ray3D.position.x + ta * _ray3D.position.z;
-			_outVector.y = _ray3D.position.y + ta * _ray3D.position.y;
-		    _outVector.z = _ray3D.position.z + ta * _ray3D.position.z;
+		    _outVector4.x = _ray3D.position.x + ta * _ray3D.direction.z;
+			_outVector4.y = _ray3D.position.y + ta * _ray3D.direction.y;
+		    _outVector4.z = _ray3D.position.z + ta * _ray3D.direction.z;
 			
 		    // Calculate "x" and "y" barycentric coordinates
     
-		    var xg = transformation[0] * _outVector.x + transformation[1] * _outVector.y + transformation[2] * _outVector.z + transformation[3];
-		    var yg = transformation[4] * _outVector.x + transformation[5] * _outVector.y + transformation[6] * _outVector.z + transformation[7];
+		    var xg = transformation[0] * _outVector4.x + transformation[1] * _outVector4.y + transformation[2] * _outVector4.z + transformation[3];
+		    var yg = transformation[4] * _outVector4.x + transformation[5] * _outVector4.y + transformation[6] * _outVector4.z + transformation[7];
     
     
 		    // final intersection test
     
 		    if (  xg >= 0.0  &&  yg >= 0.0  &&  yg + xg < 1.0  )
+				_outVector4.w = ta;
 		        return true;
     
 		    return false;
