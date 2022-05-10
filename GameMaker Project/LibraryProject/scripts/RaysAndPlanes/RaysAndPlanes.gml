@@ -8,41 +8,41 @@ function Ray3D(_pos=new Vec3(0, 0, 0), _direction=new Vec3(1,0,0)) constructor {
 	position = _pos.Copy();
 	direction = _direction.Copy();
 	
-	static Cast = function(_vec3_point, _vec3_normal) {
+	//static Cast = function(_vec3_point, _vec3_normal) {
 		
-		if(is_undefined(_vec3_normal)) {
-			return CastPlane(_vec3_point);
-		}
+	//	if(is_undefined(_vec3_normal)) {
+	//		return CastPlane(_vec3_point);
+	//	}
 		
-		_vec3_normal = _vec3_normal.Normalized();
-		var _c = -_vec3_normal.Dot(_vec3_point);
+	//	_vec3_normal = _vec3_normal.Normalized();
+	//	var _c = -_vec3_normal.Dot(_vec3_point);
 		
-		var _denominator = _vec3_normal.Dot(direction);
-		if(_denominator == 0) {
-			return infinity;
-		}
-		var _numerator = _vec3_normal.Dot(position) + _c;
-		var _t = -(_numerator / _denominator);
+	//	var _denominator = _vec3_normal.Dot(direction);
+	//	if(_denominator == 0) {
+	//		return infinity;
+	//	}
+	//	var _numerator = _vec3_normal.Dot(position) + _c;
+	//	var _t = -(_numerator / _denominator);
 		
-		//var _hit = new Vec3(position.x + direction.x * _t, 
-		//					position.y + direction.y * _t,
-		//					position.z + direction.z * _t);
-		return _t;
-	};
+	//	//var _hit = new Vec3(position.x + direction.x * _t, 
+	//	//					position.y + direction.y * _t,
+	//	//					position.z + direction.z * _t);
+	//	return _t;
+	//};
 	
-	static CastPlane = function(_plane3d) {
-		var _denominator = _plane3d.normal.Dot(direction);
-		if(_denominator == 0) {
-			return infinity;
-		}
-		var _numerator = _plane3d.normal.Dot(position) + _plane3d.D;
-		var _t = -(_numerator / _denominator);
+	//static CastPlane = function(_plane3d) {
+	//	var _denominator = _plane3d.normal.Dot(direction);
+	//	if(_denominator == 0) {
+	//		return infinity;
+	//	}
+	//	var _numerator = _plane3d.normal.Dot(position) + _plane3d.D;
+	//	var _t = -(_numerator / _denominator);
 		
-		//var _hit = new Vec3(position.x + direction.x * _t, 
-		//					position.y + direction.y * _t,
-		//					position.z + direction.z * _t);
-		return _t;
-	};
+	//	//var _hit = new Vec3(position.x + direction.x * _t, 
+	//	//					position.y + direction.y * _t,
+	//	//					position.z + direction.z * _t);
+	//	return _t;
+	//};
 }
 
 function Plane3D(_point=new Vec3(0,0,0), _vec3_normal=new Vec3(0,0,1)) constructor {
@@ -73,6 +73,20 @@ function Plane3D(_point=new Vec3(0,0,0), _vec3_normal=new Vec3(0,0,1)) construct
 		point.z = _z;
 		D = -normal.Dot(point);
 	};
+	
+	static IntersectRay = function(_ray3d) {
+		var _denominator = normal.Dot(_ray3d.direction);
+		if(_denominator == 0) {
+			return infinity;
+		}
+		var _numerator = normal.Dot(_ray3d.position) + D;
+		var _t = -(_numerator / _denominator);
+		
+		//var _hit = new Vec3(position.x + direction.x * _t, 
+		//					position.y + direction.y * _t,
+		//					position.z + direction.z * _t);
+		return _t;
+	};
 };
 
 function Triangle3D(p1, p2, p3) constructor {
@@ -88,7 +102,8 @@ function Triangle3D(p1, p2, p3) constructor {
 	edgeAC = new Vec3(pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z);
 	
 	normal = new Vec3();
-	edgeAB.Cross(edgeAC, normal);
+	edgeAC.Cross(edgeAB, normal);
+	normal.Normalize();
 	
 	
 	
