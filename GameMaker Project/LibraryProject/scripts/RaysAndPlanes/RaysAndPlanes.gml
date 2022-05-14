@@ -270,9 +270,10 @@ function Triangle3D(p1, p2, p3) constructor {
     
 		    // final intersection test
     
-		    if (  xg >= 0.0  &&  yg >= 0.0  &&  yg + xg < 1.0  )
+		    if (  xg >= 0.0  &&  yg >= 0.0  &&  yg + xg < 1.0  ) {
 				_outVector4.w = ta;
 		        return true;
+			}
     
 		    return false;
 		
