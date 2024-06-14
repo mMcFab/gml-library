@@ -1,0 +1,8 @@
+{
+  "FolderOrderSettings": [],
+  "ResourceOrderSettings": [
+    {"name":"Vecs","order":1,"path":"scripts/Vecs/Vecs.yy",},
+    {"name":"Matrix","order":2,"path":"scripts/Matrix/Matrix.yy",},
+    {"name":"RaysAndPlanes","order":3,"path":"scripts/RaysAndPlanes/RaysAndPlanes.yy",},
+  ],
+}
